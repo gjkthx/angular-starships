@@ -13,33 +13,54 @@
 // us make HTTP calls.  This is the library that axios is based on, so the syntax
 // for them will be very similar.
 
-angular.module('starships').service('shipSrvc', function($http){
+// angular.module('starships').service('shipSrvc', function($http){
   // Because the service is a constructor function, we put information onto it
   // using the this keyword.
   // Here we are creating a function that we can use to get a list of starships.
-  this.getShipList = function(){
+  // this.getShipList = function(){
     // $http returns us a promise, so we are going to return the promise
     // back to the controller that calls this function.
-    return $http.get('https://swapi.co/api/starships/').then(response=>{
+    // return $http.get('https://swapi.co/api/starships/').then(response=>{
       // Here we can clean up the data before sending it back to the
       // controller.
       // Let's grab the ships that we want to send back
-      let ships = response.data.results
+      // let ships = response.data.results
       // Unfortunalty the swapi api doesn't give us a field with the id on the
       // object, instead we get a bunch of urls, that contain the id.
       // Here we are using the ship url can grabbing the id of the ship,
       // then saving it on the ship object itself.
-      return ships.map(ship=>{
-        ship.id = ship.url.slice(31, ship.url.length-1) * 1;
-        return ship;
-      })
-    }).catch(err=>console.error(err));
-  }
+  //     return ships.map(ship=>{
+  //       ship.id = ship.url.slice(31, ship.url.length-1) * 1;
+  //       return ship;
+  //     })
+  //   }).catch(err=>console.error(err));
+  // }
 
   // Here we are creating a function to get the information of a single ship
-  this.getShipById = function(id){
-    return $http.get(`https://swapi.co/api/starships/${id}`).then(response=>{
-      return response.data;
-    }).catch(err=>console.error(err));
+//   this.getShipById = function(id){
+//     return $http.get(`https://swapi.co/api/starships/${id}`).then(response=>{
+//       return response.data;
+//     }).catch(err=>console.error(err));
+//   }
+// })
+
+angular.module('starships').service('shipSrvc', function($http){
+
+  this.ships = ['X-Wing', 'Tie-Fighter', 'Death Star','B-Wing','A-Wing'];
+
+  this.getShips = function(){
+    return $http.get('https://swapi.co/api/starships/').then(resp =>{
+      return resp.data.results.map(ship=>{
+        let ary= ship.url.split('/');
+        ship.id = ary[ary.length-2]
+        return ship
+      })
+    })
+  }
+// https://swapi.co/api/starships/9/
+  this.getShip=function(id){
+    return $http.get('https://swapi.co/api/starships/'+id) .then(resp=>{
+      return resp.data;
+    })
   }
 })
